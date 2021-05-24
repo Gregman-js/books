@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: 'Book REST API'
+  version: '1'
+paths:
+  /api/find:
+    post:
+      summary: 'find book by parameter'
+      operationId: 'App\Controller\ApiController::getBook'
+      parameters:
+        -
+          name: criteria
+          in: query
+          schema:
+            description: 'associative array - find book by values in coresponding keys'
+            type: object
+            example: '[`title`: `Trip to america`, `published` => `2014`]'
+      responses:
+        '200':
+          description: 'json data with books'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string }
+                  data: { description: 'Books objects in array', type: array, items: { $ref: '#/components/schemas/Book' } }
+                type: object
+  /api/all:
+    post:
+      summary: 'list all books'
+      operationId: 'App\Controller\ApiController::allBooks'
+      responses:
+        '200':
+          description: 'json data with books'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string }
+                  data: { description: 'Books objects in array', type: array, items: { $ref: '#/components/schemas/Book' } }
+                type: object
+  /api/add:
+    post:
+      summary: 'add book'
+      operationId: 'App\Controller\ApiController::addBook'
+      responses:
+        '200':
+          description: 'json data with books'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string, default: ok }
+                type: object
+        '400':
+          description: 'book params not provided corectly'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string, default: error }
+                  errors: { type: object }
+                type: object
+components:
+  schemas:
+    Book:
+      properties:
+        id:
+          type: int
+        title:
+          type: string
+        author:
+          type: string
+        published:
+          description: Year
+          type: string
+        isbn:
+          type: string
+        price:
+          type: float
+        description:
+          type: string
+        img:
+          description: 'Url of image'
+          type: string
+        name:
+          description: 'false - not available, true - available'
+          type: bool
+      type: object
+

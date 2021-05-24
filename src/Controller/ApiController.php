@@ -24,15 +24,30 @@ class ApiController extends AbstractController
      *     summary="find book by parameter",
      *     @OA\Parameter(
      *          in="query",
-     *          name="name",
-     *          @OA\Schema(type="string"),
+     *          name="criteria",
+     *          @OA\Schema(
+     *              type="object",
+     *              description="associative array - find book by values in coresponding keys",
+     *              example="[`title`: `Trip to america`, `published` => `2014`]"
+     *          ),
      *      ),
      *     @OA\Response(
      *          response="200",
      *          description="json data with books",
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *              @OA\Schema(ref="#/components/schemas/Book"),
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(type="string", property="status"),
+     *                  @OA\Property(type="array",
+     *                      property="data",
+     *                      description="Books objects in array",
+     *                      @OA\Items(
+     *                          type="object",
+     *                          ref="#/components/schemas/Book"
+     *                      )
+     *                  )
+     *              ),
      *          )
      *     )
      * )
@@ -44,13 +59,14 @@ class ApiController extends AbstractController
             ->getRepository(Book::class)
             ->findBy($request->request->all());
 
-        $json = $serializer->serialize([
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($serializer->serialize([
             'status' => 'ok',
             'data'=> $books
-        ], 'json');
+        ], 'json'));
 
-
-        return new Response($json);
+        return $response;
     }
     /**
      * @OA\Post(
@@ -58,41 +74,70 @@ class ApiController extends AbstractController
      *     summary="list all books",
      *     @OA\Response(
      *          response="200",
-     *          description="json data with all books",
+     *          description="json data with books",
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *              @OA\Schema(ref="#/components/schemas/Book"),
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(type="string", property="status"),
+     *                  @OA\Property(type="array",
+     *                      property="data",
+     *                      description="Books objects in array",
+     *                      @OA\Items(
+     *                          type="object",
+     *                          ref="#/components/schemas/Book"
+     *                      )
+     *                  )
+     *              ),
      *          )
      *     )
      * )
      * @Route("/api/all", name="api_all")
      */
-    public function allBooks(Request $request, SerializerInterface $serializer): Response
+    public function allBooks(SerializerInterface $serializer): Response
     {
         $books = $this->getDoctrine()
             ->getRepository(Book::class)
             ->findAll();
 
-        $json = $serializer->serialize([
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($serializer->serialize([
             'status' => 'ok',
             'data'=> $books
-        ], 'json');
+        ], 'json'));
 
-        return new Response($json);
+        return $response;
     }
     /**
      * @OA\Post(
      *     path="/api/add",
      *     summary="add book",
      *     @OA\Response(
-     *          response="200",
-     *          description="OK",
+     *          response=200,
+     *          description="json data with books",
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(type="string", property="status", default="ok"),
+     *              ),
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response=400,
+     *          description="book params not provided corectly",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(type="string", property="status", default="error"),
+     *                  @OA\Property(type="object", property="errors"),
+     *              ),
      *          )
      *     )
      * )
-     * @Route("/api/add", name="api_dd", methods={"POST"})
+     * @Route("/api/add", name="api_add", methods={"POST"})
      */
     public function addBook(Request $request, SerializerInterface $serializer): Response
     {
@@ -102,9 +147,15 @@ class ApiController extends AbstractController
         $form->submit($data);
 
         if (false === $form->isValid()) {
+            $errors = [];
+            foreach ($form->all() as $child) {
+                if (!$child->isValid()) {
+                    $errors[$child->getName()] = $form[$child->getName()]->getErrors()->current()->getMessage();
+                }
+            }
             return new Response($serializer->serialize([
                 'status' => 'error',
-                'errors' => $form->getErrors()
+                'errors' => $errors,
             ], 'json'), JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -113,8 +164,12 @@ class ApiController extends AbstractController
         $em->flush();
 
 
-        return new Response($serializer->serialize([
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($serializer->serialize([
             'status' => 'ok',
         ], 'json'));
+
+        return $response;
     }
 }
