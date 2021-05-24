@@ -12,7 +12,7 @@ class ApiTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/api/all');
 
-        $response = json_decode(json_decode($client->getResponse()->getContent(), true), true);
+        $response = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertResponseIsSuccessful();
         $this->assertEquals('ok', $response['status']);
@@ -33,7 +33,7 @@ class ApiTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/api/add', $book);
 
-        $response = json_decode(json_decode($client->getResponse()->getContent(), true), true);
+        $response = json_decode($client->getResponse()->getContent(), true);
 
         if ($added) {
             $this->assertResponseIsSuccessful();
@@ -53,7 +53,7 @@ class ApiTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/api/find', $findBy);
 
-        $response = json_decode(json_decode($client->getResponse()->getContent(), true), true);
+        $response = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(200);

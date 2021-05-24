@@ -38,7 +38,7 @@ class ApiController extends AbstractController
      * )
      * @Route("/api/find", name="api_find", methods={"POST"})
      */
-    public function getBook(Request $request, SerializerInterface $serializer): JsonResponse
+    public function getBook(Request $request, SerializerInterface $serializer): Response
     {
         $books = $this->getDoctrine()
             ->getRepository(Book::class)
@@ -50,7 +50,7 @@ class ApiController extends AbstractController
         ], 'json');
 
 
-        return new JsonResponse($json);
+        return new Response($json);
     }
     /**
      * @OA\Post(
@@ -67,7 +67,7 @@ class ApiController extends AbstractController
      * )
      * @Route("/api/all", name="api_all")
      */
-    public function allBooks(Request $request, SerializerInterface $serializer): JsonResponse
+    public function allBooks(Request $request, SerializerInterface $serializer): Response
     {
         $books = $this->getDoctrine()
             ->getRepository(Book::class)
@@ -78,8 +78,7 @@ class ApiController extends AbstractController
             'data'=> $books
         ], 'json');
 
-
-        return new JsonResponse($json);
+        return new Response($json);
     }
     /**
      * @OA\Post(
@@ -95,7 +94,7 @@ class ApiController extends AbstractController
      * )
      * @Route("/api/add", name="api_dd", methods={"POST"})
      */
-    public function addBook(Request $request, SerializerInterface $serializer): JsonResponse
+    public function addBook(Request $request, SerializerInterface $serializer): Response
     {
         $data = $request->request->all();
         $form = $this->createForm(BookType::class,  new Book());
@@ -103,7 +102,7 @@ class ApiController extends AbstractController
         $form->submit($data);
 
         if (false === $form->isValid()) {
-            return new JsonResponse($serializer->serialize([
+            return new Response($serializer->serialize([
                 'status' => 'error',
                 'errors' => $form->getErrors()
             ], 'json'), JsonResponse::HTTP_BAD_REQUEST);
@@ -114,7 +113,7 @@ class ApiController extends AbstractController
         $em->flush();
 
 
-        return new JsonResponse($serializer->serialize([
+        return new Response($serializer->serialize([
             'status' => 'ok',
         ], 'json'));
     }
