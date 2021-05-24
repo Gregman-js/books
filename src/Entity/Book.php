@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=BookRepository::class)
  */
 class Book
@@ -15,24 +16,41 @@ class Book
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @OA\Property(
+     *     property="id",
+     *     type="int",
+     * )
      */
     private $id;
 
     /**
      * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(
+     *     property="title",
+     *     type="string",
+     * )
      */
     private $title;
 
     /**
      * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(
+     *     property="author",
+     *     type="string",
+     * )
      */
     private $author;
 
     /**
      * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(
+     *     property="published",
+     *     type="string",
+     *     description="Year"
+     * )
      */
     private $published;
 
@@ -40,28 +58,50 @@ class Book
      * @Assert\NotBlank
      * @Assert\Isbn
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(
+     *     property="isbn",
+     *     type="string",
+     * )
      */
     private $isbn;
 
     /**
      * @Assert\NotBlank
      * @ORM\Column(type="float")
+     * @OA\Property(
+     *     property="price",
+     *     type="float",
+     * )
      */
     private $price;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @OA\Property(
+     *     property="description",
+     *     type="string",
+     * )
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @OA\Property(
+     *     property="img",
+     *     type="string",
+     *     description="Url of image"
+     * )
      */
     private $img;
 
     /**
      * @Assert\NotBlank
      * @ORM\Column(type="boolean")
+     * @OA\Property(
+     *     property="name",
+     *     type="bool",
+     *     description="false - not available, true - available"
+     * )
      */
     private $status;
 

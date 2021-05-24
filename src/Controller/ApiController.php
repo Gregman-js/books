@@ -12,10 +12,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @OA\Info(title="Book REST API", version="1")
+ */
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/api/get", name="api_get", methods={"POST"})
+     * @OA\Post(
+     *     path="/api/find",
+     *     summary="find book by parameter",
+     *     @OA\Parameter(
+     *          in="query",
+     *          name="name",
+     *          @OA\Schema(type="string"),
+     *      ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="json data with books",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Book"),
+     *          )
+     *     )
+     * )
+     * @Route("/api/find", name="api_find", methods={"POST"})
      */
     public function getBook(Request $request, SerializerInterface $serializer): JsonResponse
     {
@@ -32,6 +52,18 @@ class ApiController extends AbstractController
         return new JsonResponse($json);
     }
     /**
+     * @OA\Post(
+     *     path="/api/all",
+     *     summary="list all books",
+     *     @OA\Response(
+     *          response="200",
+     *          description="json data with all books",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Book"),
+     *          )
+     *     )
+     * )
      * @Route("/api/all", name="api_all", methods={"POST"})
      */
     public function allBooks(Request $request, SerializerInterface $serializer): JsonResponse
@@ -49,6 +81,17 @@ class ApiController extends AbstractController
         return new JsonResponse($json);
     }
     /**
+     * @OA\Post(
+     *     path="/api/add",
+     *     summary="add book",
+     *     @OA\Response(
+     *          response="200",
+     *          description="OK",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *     )
+     * )
      * @Route("/api/add", name="api_dd", methods={"POST"})
      */
     public function addBook(Request $request, SerializerInterface $serializer): JsonResponse
