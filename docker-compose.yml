@@ -34,3 +34,10 @@ services:
       volumes:
         - .:/application
         - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+
+    composer:
+      build: phpdocker/composer
+      container_name: books-composer
+      working_dir: /application
+      volumes:
+        - .:/application

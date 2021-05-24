@@ -65,7 +65,7 @@ class ApiController extends AbstractController
      *          )
      *     )
      * )
-     * @Route("/api/all", name="api_all", methods={"POST"})
+     * @Route("/api/all", name="api_all")
      */
     public function allBooks(Request $request, SerializerInterface $serializer): JsonResponse
     {
