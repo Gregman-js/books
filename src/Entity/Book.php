@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -18,32 +19,38 @@ class Book
     private $id;
 
     /**
+     * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
+     * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
      */
     private $author;
 
     /**
+     * @Assert\NotBlank
      * @ORM\Column(type="string", length=255)
      */
-    private $issued;
+    private $published;
 
     /**
+     * @Assert\NotBlank
+     * @Assert\Isbn
      * @ORM\Column(type="string", length=255)
      */
     private $isbn;
 
     /**
+     * @Assert\NotBlank
      * @ORM\Column(type="float")
      */
     private $price;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -53,7 +60,8 @@ class Book
     private $img;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @ORM\Column(type="boolean")
      */
     private $status;
 
@@ -86,14 +94,14 @@ class Book
         return $this;
     }
 
-    public function getIssued(): ?string
+    public function getPublished(): ?string
     {
-        return $this->issued;
+        return $this->published;
     }
 
-    public function setIssued(string $issued): self
+    public function setPublished(string $published): self
     {
-        $this->issued = $issued;
+        $this->published = $published;
 
         return $this;
     }
@@ -146,12 +154,12 @@ class Book
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(bool $status): self
     {
         $this->status = $status;
 
